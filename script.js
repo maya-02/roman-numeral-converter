@@ -1,7 +1,7 @@
-//Get references to DOM elements
+// Get references to DOM elements
 const numberInput = document.getElementById("number");
-const convertBtn= document.getElementById("convert-btn");
-const output= document.getElementById("output");
+const convertBtn = document.getElementById("convert-btn");
+const output = document.getElementById("output");
 
 const romanNumerals = [
   { numeral: 'M', val: 1000 },
@@ -19,65 +19,61 @@ const romanNumerals = [
   { numeral: 'I', val: 1 }
 ];
 
-
-
-
-const findLargestRomanNumeral = (num) =>{
-  console.log("roman numeral", num);
-  for (let i=0;i<romanNumerals.length;i++)  {
-    if(num >= romanNumerals[i].val){
-      return romanNumerals[i]
+// Function to find the largest Roman numeral for a given number
+const findLargestRomanNumeral = (num) => {
+  for (let i = 0; i < romanNumerals.length; i++) {
+    if (num >= romanNumerals[i].val) {
+      return romanNumerals[i];
     }
   }
-}
-const getNumeral = (num,outputStr) =>{
-  if (num > 0){
-    console.log("process Numeral", num);
-    const numeralObj=findLargestRomanNumeral(num);
-    console.log(numeralObj.val);
-    num-=numeralObj.val;
-    console.log("num is",num);
+};
+
+// Recursive function to convert a number to Roman numeral
+const getNumeral = (num, outputStr) => {
+  if (num > 0) {
+    const numeralObj = findLargestRomanNumeral(num);
+    num -= numeralObj.val;
     outputStr += numeralObj.numeral;
-    console.log("output",outputStr);
-    return getNumeral(num,outputStr);
-  }
-  else{
+    return getNumeral(num, outputStr);
+  } else {
     return outputStr;
   }
+};
 
-}
+// Check and validate user input
+const checkUserInput = (e) => {
+  e.preventDefault(); // Prevent form submission and page refresh
+  const inputValue = numberInput.value.trim();
 
-//Check and validate user input
-const checkUserInput = () => {
-  const inputInt = parseInt(numberInput.value);
-  console.log(inputInt);
-  let outputString="";
-  if (isNaN(inputInt)){
-    output.innerText="Please enter a valid number";
+  if (inputValue === "") {
+    output.innerText = "Please enter a number";
     return;
   }
-  else if (inputInt < 1){
-    output.innerText="Please enter a number greater than or equal to 1";
-    return;
-  }
-  else if (inputInt >= 4000){
-    output.innerText="Please enter a number less than or equal to 3999";
-    return;
-  }
-  else{
-    outputString=getNumeral(inputInt,outputString);
-    console.log("finished else")
-  }
-  console.log("outputString");
-  output.innerText=outputString;
-  numberInput.value="";
-}
 
-//event listeners
+  const inputInt = parseInt(inputValue);
+
+  if (isNaN(inputInt)) {
+    output.innerText = "Please enter a valid number";
+    return;
+  } else if (inputInt < 1) {
+    output.innerText = "Please enter a number greater than or equal to 1";
+    return;
+  } else if (inputInt >= 4000) {
+    output.innerText = "Please enter a number less than or equal to 3999";
+    return;
+  } else {
+    const outputString = getNumeral(inputInt, "");
+    output.innerText = outputString;
+  }
+
+  numberInput.value = ""; // Clear input after conversion
+};
+
+// Event listeners
 convertBtn.addEventListener("click", checkUserInput);
 
-convertBtn.addEventListener("keydown",(e)=>{
-  if (e.key == "Enter"){
-    checkUserInput();
+numberInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    checkUserInput(e);
   }
-})
+});
